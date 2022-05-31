@@ -1,9 +1,9 @@
 package project2.Pets;
 
-public class Pet {
+public abstract class Pet {
 
     private String name;
-    private PetType type;
+    private final PetType type;
     private int age;
 
 

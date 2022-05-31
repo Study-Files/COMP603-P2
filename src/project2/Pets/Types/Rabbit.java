@@ -9,8 +9,8 @@ public class Rabbit extends Pet {
     private final int MAX_HUNGER = 3;
     private final int MAX_HEALTH = 6;
 
-    private String name;
-    private int age;
+    private final String name;
+    private final int age;
     private int happiness;
     private int hunger;
     private int health;
@@ -58,14 +58,7 @@ public class Rabbit extends Pet {
     public boolean endScenario() {
         if (happiness == 0 || hunger == 0 || health == 0) {
             double chance = Math.random();
-            if (chance < 0.3) {
-                if (happiness == 0) {
-                    System.out.println("Your rabbit left due to lack of happiness.");
-                } else {
-                    System.out.println("Your rabbit died.");
-                }
-                return true;
-            }
+            return chance < 0.3;
         }
         return false;
     }
