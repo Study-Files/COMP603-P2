@@ -1,7 +1,5 @@
 # Project exclude paths
 /out/
-/src/minesweeper/*
-/.idea/
-/data/
-/A1/nbproject/private/
-/A1/build/
+.idea/
+PetGame/
+derby.log
