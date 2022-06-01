@@ -49,12 +49,14 @@ public class GUIController extends JFrame implements ActionListener {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (state.equals("game")) {
-                    System.out.println("Getting data from game panel");
                     Object[] data = gamePanel.getData();
                     pet = (Pet) data[0];
                     System.out.println(data[1]);
                     DatabasePets.updateCycleData(database.getConnection(), username, pet.getName(), (int) data[1], (int) data[2], (int) data[3]);
                     DatabasePets.savePet(database.getConnection(), username, pet);
+                    JOptionPane.showMessageDialog(e.getComponent(),
+                            "Saving game...",
+                            null, JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -80,6 +82,12 @@ public class GUIController extends JFrame implements ActionListener {
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                if (username.length() > 255 || password.length() > 255) {
+                    JOptionPane.showMessageDialog(this,
+                            "Username and password must be less than 255 characters",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 if (DatabaseUser.login(database.getConnection(), username, password)) {
                     state = "menu";
                 } else {
@@ -93,6 +101,12 @@ public class GUIController extends JFrame implements ActionListener {
                 if (loginPanel.getUsername().length() < 1 || loginPanel.getPassword().length() < 1) {
                     JOptionPane.showMessageDialog(this,
                             "Please enter a username and password",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (loginPanel.getUsername().length() > 255 || loginPanel.getUsername().length() > 255) {
+                    JOptionPane.showMessageDialog(this,
+                            "Username and password must be less than 255 characters",
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -150,6 +164,12 @@ public class GUIController extends JFrame implements ActionListener {
                 if (name.length() < 1) {
                     JOptionPane.showMessageDialog(this,
                             "Please enter a name for your pet.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (name.length() > 255) {
+                    JOptionPane.showMessageDialog(this,
+                            "Pet name must be less than 255 characters.",
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -215,11 +235,15 @@ public class GUIController extends JFrame implements ActionListener {
         if (state.equals("game")) {
             // Return to menu
             if (e.getActionCommand().equals("Menu")) {
+                gamePanel.clearFields();
                 Object[] data = gamePanel.getData();
                 pet = (Pet) data[0];
                 DatabasePets.updateCycleData(database.getConnection(), username, pet.getName(), (int) data[1], (int) data[2], (int) data[3]);
                 DatabasePets.savePet(database.getConnection(), username, pet);
                 state = "menu";
+                JOptionPane.showMessageDialog(this,
+                        "Saving game...",
+                        null, JOptionPane.INFORMATION_MESSAGE);
             }
             // Rename pet
             if (e.getActionCommand().equals("Rename")) {
@@ -300,6 +324,7 @@ public class GUIController extends JFrame implements ActionListener {
             }
 
             if (state.equals("gameover")) {
+                gamePanel.clearFields();
                 DatabasePets.deletePet(database.getConnection(), username, pet.getName());
                 // Set game over message
                 gameOverPanel.setMessage(pet, totalCycles);
