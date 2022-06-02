@@ -19,42 +19,49 @@ public class Project2Test {
         database = new DatabaseController();
         DatabaseUser.register(database.getConnection(), "test", "test");
         DatabasePets.savePet(database.getConnection(), "test", new Dog("test", 1));
-        DatabasePets.savePet(database.getConnection(), "jack", new Dog("jacks dog", 1));
     }
 
     @After
     public void tearDown() {
+        DatabaseUser.deleteUser(database.getConnection(), "test");
+        DatabasePets.deletePet(database.getConnection(), "test", "test");
         database.closeConnection();
         database = null;
     }
 
     @Test
     public void testDatabase() {
+        // Test that database exists
         Assert.assertNotNull(database);
     }
 
     @Test()
-    public void testDatabaseConnection() throws SQLException {
+    public void testDatabaseConnectionNotClosed() throws SQLException {
+        // Test that connection is not closed
         Assert.assertFalse(database.getConnection().isClosed());
     }
 
     @Test
     public void testDatabaseLogin() {
+        // Test that user can login
         Assert.assertTrue(DatabaseUser.login(database.getConnection(), "test", "test"));
     }
 
     @Test
     public void testGetPets() {
+        // Test getPets()
         Assert.assertEquals(DatabasePets.getPets(database.getConnection(), "test").size(), 1);
     }
 
     @Test
     public void testGetPets2() {
-        Assert.assertEquals(DatabasePets.getPets(database.getConnection(), "jack").size(), 1);
+        // Test that code doesn't crash when there are no pets
+        Assert.assertEquals(DatabasePets.getPets(database.getConnection(), "jack").size(), 0);
     }
 
     @Test
     public void testIncreasePetAge() {
+        // Test age increase
         HashSet<Pet> pets = DatabasePets.getPets(database.getConnection(), "test");
         Pet pet = pets.iterator().next();
         pet.increaseAge();
@@ -62,17 +69,5 @@ public class Project2Test {
         int actual = pet.getAge();
         Assert.assertEquals(expected, actual);
     }
-
-    @Test(expected = AssertionError.class)
-    public void testIncreasePetAgeFail() {
-        HashSet<Pet> pets = DatabasePets.getPets(database.getConnection(), "jack");
-        Pet pet = pets.iterator().next();
-        pet.increaseAge();
-        int expected = 3;
-        int actual = pet.getAge();
-        Assert.assertEquals(expected, actual);
-    }
-
-
 
 }
