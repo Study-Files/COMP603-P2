@@ -34,4 +34,12 @@ public class DatabaseUser {
         }
         return flag;
     }
+
+    public static void deleteUser(Connection connection, String username) {
+        try {
+            connection.prepareStatement("DELETE FROM USERS WHERE USERNAME = '" + username + "'").executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error deleting user");
+        }
+    }
 }
