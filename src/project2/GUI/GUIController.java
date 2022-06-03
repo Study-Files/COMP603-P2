@@ -49,6 +49,7 @@ public class GUIController extends JFrame implements ActionListener {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (state.equals("game")) {
+                    // Save data before closing window
                     Object[] data = gamePanel.getData();
                     pet = (Pet) data[0];
                     System.out.println(data[1]);
@@ -73,6 +74,7 @@ public class GUIController extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // Login Buttons
         if (state.equals("login")) {
+            // Login Button
             if (e.getActionCommand().equals("Login")) {
                 username = loginPanel.getUsername();
                 String password = loginPanel.getPassword();
@@ -88,6 +90,7 @@ public class GUIController extends JFrame implements ActionListener {
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                // Check if username and password are valid
                 if (DatabaseUser.login(database.getConnection(), username, password)) {
                     state = "menu";
                 } else {
@@ -97,6 +100,7 @@ public class GUIController extends JFrame implements ActionListener {
                     return;
                 }
             }
+            // Register Button
             if (e.getActionCommand().equals("Register")) {
                 if (loginPanel.getUsername().length() < 1 || loginPanel.getPassword().length() < 1) {
                     JOptionPane.showMessageDialog(this,
@@ -116,6 +120,7 @@ public class GUIController extends JFrame implements ActionListener {
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                // Check if username is valid
                 if (DatabaseUser.register(database.getConnection(), loginPanel.getUsername(), loginPanel.getPassword())) {
                     username = loginPanel.getUsername();
                     state = "menu";
@@ -147,6 +152,7 @@ public class GUIController extends JFrame implements ActionListener {
         }
         // Menu Buttons
         if (state.equals("menu")) {
+            // Logout Button
             if (e.getActionCommand().equals("Logout")) {
                 menuPanel.clearFields();
                 // Load login panel
@@ -156,9 +162,11 @@ public class GUIController extends JFrame implements ActionListener {
                 repaint();
                 state = "login";
             }
+            // Quit Button
             if (e.getActionCommand().equals("Quit")) {
                 System.exit(0);
             }
+            // Create Pet Button
             if (e.getActionCommand().equals("Create Pet")) {
                 String name = menuPanel.getNewPetName();
                 if (name.length() < 1) {
@@ -190,6 +198,7 @@ public class GUIController extends JFrame implements ActionListener {
                 gamePanel.setData(pet, 0, 0, 0);
                 state = "game";
             }
+            // Select Pet Button
             if (e.getActionCommand().equals("Select Pet")) {
                 String name = menuPanel.getSelectedPet();
                 if (name == null) {
@@ -199,10 +208,12 @@ public class GUIController extends JFrame implements ActionListener {
                     return;
                 }
                 pet = pets.get(name);
+                // Load cycle data for pet
                 int[] cycles = DatabasePets.getCycleData(database.getConnection(), username, pet.getName());
                 gamePanel.setData(pet, cycles[0], cycles[1], cycles[2]);
                 state = "game";
             }
+            // Delete Pet Button
             if (e.getActionCommand().equals("Delete Pet")) {
                 String name = menuPanel.getSelectedPet();
                 if (name == null) {
@@ -215,6 +226,7 @@ public class GUIController extends JFrame implements ActionListener {
                         "Are you sure you want to delete " + name + "?",
                         "Confirm Deletion", JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
+                    // Delete pet from database
                     DatabasePets.deletePet(database.getConnection(), username, name);
                     pets.remove(name);
                     menuPanel.addPetsList(pets.keySet());
@@ -238,6 +250,7 @@ public class GUIController extends JFrame implements ActionListener {
                 gamePanel.clearFields();
                 Object[] data = gamePanel.getData();
                 pet = (Pet) data[0];
+                // Update database with pet info
                 DatabasePets.updateCycleData(database.getConnection(), username, pet.getName(), (int) data[1], (int) data[2], (int) data[3]);
                 DatabasePets.savePet(database.getConnection(), username, pet);
                 state = "menu";
@@ -245,7 +258,7 @@ public class GUIController extends JFrame implements ActionListener {
                         "Saving game...",
                         null, JOptionPane.INFORMATION_MESSAGE);
             }
-            // Rename pet
+            // Rename Pet Button
             if (e.getActionCommand().equals("Rename")) {
                 System.out.println("Rename");
                 String name = gamePanel.getNewName();
@@ -263,11 +276,12 @@ public class GUIController extends JFrame implements ActionListener {
                         return;
                     }
                     String oldName = pet.getName();
+                    // Rename pet in database
                     DatabasePets.renamePet(database.getConnection(), username, oldName, name);
+                    // Update pets in menu
                     pets.remove(oldName);
                     pet.setName(name);
                     pets.put(name, pet);
-                    System.out.println(name);
                     gamePanel.renamePet(name);
                     gamePanel.clearFields();
                 } else {
@@ -354,9 +368,11 @@ public class GUIController extends JFrame implements ActionListener {
 
         // Game over Buttons
         if (state.equals("gameover")) {
+            // Menu Button
             if (e.getActionCommand().equals("Menu")) {
                 state = "menu";
             }
+            // Exit Button
             if (e.getActionCommand().equals("Exit")) {
                 System.exit(0);
             }

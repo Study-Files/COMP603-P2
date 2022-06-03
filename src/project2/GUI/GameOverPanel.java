@@ -26,7 +26,7 @@ public class GameOverPanel extends JPanel {
 
         Rectangle r = new Rectangle(0, 0, 600, 400);
 
-
+        // Set layout
         gameOverLabel.setBounds(210, 100, 200, 50);
         messageLabel.setBounds(r.x+100, r.y+50, r.width-200, r.height-200);
         reasonLabel.setBounds(r.x+100, r.y+70, r.width-200, r.height-200);
@@ -34,6 +34,7 @@ public class GameOverPanel extends JPanel {
         menuButton.setBounds(150, 200, 80, 20);
         exitButton.setBounds(250, 200, 80, 20);
 
+        // Add components
         add(gameOverLabel);
         add(messageLabel);
         add(reasonLabel);
@@ -47,6 +48,7 @@ public class GameOverPanel extends JPanel {
         exitButton.addActionListener(listener);
     }
 
+    // Set message and reason labels
     public void setMessage(Pet pet, int cycles) {
         String message = "";
         message += "You lasted " + cycles + " cycles and your pet lived to be " + pet.getAge() + " years old!";

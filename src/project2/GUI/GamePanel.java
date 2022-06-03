@@ -206,6 +206,7 @@ public class GamePanel extends JPanel {
         updateLabels();
     }
 
+    // Repaints the panel with the current data
     public void updateLabels() {
         this.cycleLabel.setText("Cycle: " + cycle);
         this.yearLabel.setText("Year: " + year);
